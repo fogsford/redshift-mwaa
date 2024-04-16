@@ -1,9 +1,10 @@
-template-file-path: ./deploy/cf-stack.yaml
-parameters: 
-    WorkgroupNameParameter: adhoc-cluster
-    VpcId: vpc-094b647b64834f13b
-    SubnetList: subnet-0c2fb957696bae336,subnet-0113a36312c6785ef,subnet-0a9299ca4b15a236b,subnet-005879405c502f434,subnet-0bcc3a6041438916e,subnet-0aba55c1c1da93b16
+template-file-path: deploy/cf-stack.yaml
+parameters:
+  VpcId: vpc-094b647b64834f13b
+  WorkgroupNameParameter: adhoc-cluster
+  SubnetList: >-
+    subnet-0c2fb957696bae336,subnet-0113a36312c6785ef,subnet-0a9299ca4b15a236b,subnet-005879405c502f434,subnet-0bcc3a6041438916e,subnet-0aba55c1c1da93b16
 tags:
-    cost-center: 'none'
-    environment: 'dev'
-    repo: git@github.com:fogsford/redshift-mwaa.git
+  environment: dev
+  repo: git@github.com:fogsford/redshift-mwaa.git
+  cost-center: none
