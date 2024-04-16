@@ -350,7 +350,7 @@ Resources:
 
           - Effect: Allow
             Action:
-              - 'redshift-data:*''
+              - redshift-data:*''
             Resource: '*'
 #
 
