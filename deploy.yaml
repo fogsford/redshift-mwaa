@@ -1,0 +1,3 @@
+template-file-path: deploy/cf-stack.yaml
+parameters: {}
+tags: {}
