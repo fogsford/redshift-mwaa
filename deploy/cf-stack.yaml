@@ -1,34 +1,18 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Deploy Redshift adhoc cluster and its resources
-Metadata:
-  StackName: adhoc-adhoc-cluster
-  Tags:
-    application: platform-redshift
-    namespace: virgil
-    purpose: adhoc
 Outputs:
   ExportRedshiftClusterRole:
     Export:
       Name: !Sub redshift-adhoc-cluster-role:ExportRedshiftadhocClusterRole
     Value: !GetAtt RedshiftClusterRole.Arn
 Parameters:
-  # REDSHIFTPASS:
-  #   NoEcho: true
-  #   Type: String
-  # REDSHIFTUSER:
-  #   NoEcho: true
-  #   Type: String
-  #   Default: admin
   WorkgroupNameParameter:
-    Default: adhoc-cluster-workgroup
     Type: String
   VpcId:
     Type: String
-    Default: vpc-094b647b64834f13b
   SubnetList:
     Description: Comma-separated list of subnet IDs
     Type: String
-    Default: subnet-0c2fb957696bae336,subnet-0113a36312c6785ef,subnet-0a9299ca4b15a236b,subnet-005879405c502f434,subnet-0bcc3a6041438916e,subnet-0aba55c1c1da93b16
 Resources:
   RedshiftClusterRole:
     Type: AWS::IAM::Role
@@ -41,16 +25,6 @@ Resources:
             Principal:
               Service: redshift.amazonaws.com
       RoleName: redshift-adhoc-cluster-s3-role
-  # RedshiftClusterSecret:
-  #   Type: AWS::SecretsManager::Secret
-  #   Properties:
-  #     Description: Hardcoded Password for Redshift adhoc Cluster.
-  #     SecretString: !Sub |
-  #       {
-  #         "username": "${REDSHIFTUSER}",
-  #         "password": "${REDSHIFTPASS}",
-  #         "description": "This secret is used by redshift adhoc cluster admins"
-  #       }
   RedshiftClusterSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -92,10 +66,8 @@ Resources:
     Type: AWS::RedshiftServerless::Namespace
     DependsOn: RedshiftClusterRole
     Properties:
-      # AdminUserPassword: !Ref REDSHIFTPASS
-      # AdminUsername: !Ref REDSHIFTUSER
       ManageAdminPassword: true
-      DbName: adhoc
+      DbName: lab
       IamRoles:
         - !GetAtt RedshiftClusterRole.Arn
-      NamespaceName: adhoc-cluster`
+      NamespaceName: adhoc-cluster
