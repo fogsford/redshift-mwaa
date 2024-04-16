@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Deploy Redshift adhoc cluster and its resources
 Metadata:
-  StackName: adhoc-adhoc-cluster-test
+  StackName: adhoc-adhoc-cluster
   Tags:
     application: platform-redshift
     namespace: virgil
