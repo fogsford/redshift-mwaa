@@ -1,0 +1,35 @@
+---
+    name: "1. Sync Dags"
+    on:
+        push:
+            branches:
+                - main
+            paths:
+                - dags/**
+        workflow_dispatch:
+    
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint (aws auusme role).
+    permissions:
+        id-token: write
+        contents: write
+    
+    concurrency:
+        group: ${{ github.event_name }}-${{ github.workflow }}-${{ github.head_ref || github.ref }}
+        cancel-in-progress: true
+    
+    jobs:
+        sync:
+            runs-on: ubuntu-latest
+            steps:
+                - name: checkout
+                  uses: actions/checkout@v4
+    
+                - name: Configure AWS Credentials
+                  uses: aws-actions/configure-aws-credentials@v4
+                  with:
+                    role-to-assume: arn:aws:iam::248992976571:role/GithubActionsWeb
+                    aws-region: us-east-1
+                    
+                - name: sync s3
+                  run: |
+                    aws s3 sync dags/ s3://fogsford-dags-dev/dags/ --delete
