@@ -24,7 +24,8 @@ try:
         sql="select current_user;",
         # aws_conn_id="aws_default",
         wait_for_completion=True,
-        return_sql_result=True
+        return_sql_result=True,
+        db_user = "airflow"
     )
 
     rd
