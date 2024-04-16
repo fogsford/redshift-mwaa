@@ -71,3 +71,7 @@ Resources:
       IamRoles:
         - !GetAtt RedshiftClusterRole.Arn
       NamespaceName: adhoc-cluster
+      LogExports:
+        - userlog
+        - connectionlog
+        - useractivitylog
