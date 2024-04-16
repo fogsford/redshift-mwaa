@@ -1,0 +1,101 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Deploy Redshift adhoc cluster and its resources
+Metadata:
+  StackName: adhoc-adhoc-cluster-test
+  Tags:
+    application: platform-redshift
+    namespace: virgil
+    purpose: adhoc
+Outputs:
+  ExportRedshiftClusterRole:
+    Export:
+      Name: !Sub redshift-adhoc-cluster-role:ExportRedshiftadhocClusterRole
+    Value: !GetAtt RedshiftClusterRole.Arn
+Parameters:
+  # REDSHIFTPASS:
+  #   NoEcho: true
+  #   Type: String
+  # REDSHIFTUSER:
+  #   NoEcho: true
+  #   Type: String
+  #   Default: admin
+  WorkgroupNameParameter:
+    Default: adhoc-cluster-workgroup
+    Type: String
+  VpcId:
+    Type: String
+    Default: vpc-094b647b64834f13b
+  SubnetList:
+    Description: Comma-separated list of subnet IDs
+    Type: String
+    Default: subnet-0c2fb957696bae336,subnet-0113a36312c6785ef,subnet-0a9299ca4b15a236b,subnet-005879405c502f434,subnet-0bcc3a6041438916e,subnet-0aba55c1c1da93b16
+Resources:
+  RedshiftClusterRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              Service: redshift.amazonaws.com
+      RoleName: redshift-adhoc-cluster-s3-role
+  # RedshiftClusterSecret:
+  #   Type: AWS::SecretsManager::Secret
+  #   Properties:
+  #     Description: Hardcoded Password for Redshift adhoc Cluster.
+  #     SecretString: !Sub |
+  #       {
+  #         "username": "${REDSHIFTUSER}",
+  #         "password": "${REDSHIFTPASS}",
+  #         "description": "This secret is used by redshift adhoc cluster admins"
+  #       }
+  RedshiftClusterSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for the redshift adhoc cluster
+      GroupName: redshift-adhoc-cluster-security-group
+      VpcId: !Ref VpcId
+      SecurityGroupEgress:
+        - CidrIp: 0.0.0.0/0
+          Description: Allow all outbound traffic by default
+          IpProtocol: '-1'
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          Description: CIDR range of the default VPC
+          FromPort: 5439
+          IpProtocol: tcp
+          ToPort: 5439
+      Tags:
+        - Key: Name
+          Value: redshift-adhoc-cluster-security-group
+  RedshiftClusterWorkgroup:
+    Type: AWS::RedshiftServerless::Workgroup
+    DependsOn: RedshiftClusterNamespace
+    Properties:
+      BaseCapacity: 8
+      ConfigParameters:
+        - ParameterKey: require_ssl
+          ParameterValue: 'true'
+      EnhancedVpcRouting: false
+      NamespaceName: !Ref RedshiftClusterNamespace
+      Port: 5439
+      PubliclyAccessible: true
+      SecurityGroupIds:
+        - !GetAtt RedshiftClusterSecurityGroup.GroupId
+      SubnetIds: !Split
+        - ','
+        - !Ref SubnetList
+      WorkgroupName: !Ref WorkgroupNameParameter
+  RedshiftClusterNamespace:
+    Type: AWS::RedshiftServerless::Namespace
+    DependsOn: RedshiftClusterRole
+    Properties:
+      # AdminUserPassword: !Ref REDSHIFTPASS
+      # AdminUsername: !Ref REDSHIFTUSER
+      ManageAdminPassword: true
+      DbName: adhoc
+      IamRoles:
+        - !GetAtt RedshiftClusterRole.Arn
+      NamespaceName: adhoc-cluster`
