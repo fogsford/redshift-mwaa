@@ -54,6 +54,16 @@ Resources:
         - Key: Name
           Value: MWAAEnvironment
 
+  EnvironmentBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref S3Bucket
+      AccessControl: Private
+      VersioningConfiguration:
+        Status: Enabled
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName} MWAA Environment Bucket
 
   PrivateSubnet1:
     Type: AWS::EC2::Subnet
@@ -214,7 +224,9 @@ Resources:
       
   MwaaEnvironment:
     Type: AWS::MWAA::Environment
-    DependsOn: MwaaExecutionPolicy
+    DependsOn:
+    - MwaaExecutionPolicy
+    - EnvironmentBucket 
     Properties:
       AirflowVersion: !Ref AirflowVersion
       Name: !Sub "${AWS::StackName}-MwaaEnvironment"
