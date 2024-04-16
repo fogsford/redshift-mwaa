@@ -279,21 +279,14 @@ Resources:
             Action: airflow:PublishMetrics
             Resource:
               - !Sub "arn:aws:airflow:${AWS::Region}:${AWS::AccountId}:environment/${AWS::StackName}-MwaaEnvironment"
-          - Effect: Deny
-            Action: s3:ListAllMyBuckets
-            Resource:
-              - !Sub "arn:aws:s3:::${S3Bucket}"
           - Effect: Allow
             Action:
               - "s3:*"
-            Resource:
-              - !Sub "arn:aws:s3:::${S3Bucket}"
-              - !Sub "arn:aws:s3:::${S3Bucket}/*"
+            Resource: "*"
           - Effect: Allow
             Action:
               - logs:DescribeLogGroups
             Resource: "*"
-
           - Effect: Allow
             Action:
               - logs:CreateLogStream
@@ -330,6 +323,22 @@ Resources:
               StringLike:
                 "kms:ViaService":
                   - !Sub "sqs.${AWS::Region}.amazonaws.com"
+#
+          - Effect: Allow
+            Action:
+              - redshift-serverless:GetCredentials
+              - redshift-serverless:GetWorkgroup
+            Resource: '*'
+          - Effect: Allow
+            Action:
+              - redshift:DescribeClusters
+              - redshift-serverless:ListNamespaces
+              - redshift-serverless:ListWorkgroups
+            Resource: '*'
+#
+
+
+
 Outputs:
   VPC:
     Description: A reference to the created VPC
