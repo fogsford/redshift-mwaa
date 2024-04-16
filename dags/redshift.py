@@ -1,7 +1,7 @@
 import os
 from airflow import DAG
 from airflow.providers.amazon.aws.operators.redshift_data import RedshiftDataOperator
-
+from airflow.providers.amazon.aws.operators.redshift_sql import RedshiftSQLOperator
 default_args = {
     "start_date": "2023-03-01",
 }
@@ -16,16 +16,17 @@ dag = DAG(
 )
 
 try:
-    rd = RedshiftDataOperator(
-        task_id="run_this",
-        dag=dag,
-        database="dev",
-        workgroup_name="adhoc-cluster",
-        sql="select current_user;",
-        # aws_conn_id="aws_default",
-        wait_for_completion=True,
-        return_sql_result=True,
-        db_user = "airflow"
+    # rd = 
+    
+    rd = RedshiftSQLOperator(
+        task_id='setup__create_table',
+        sql="""
+            CREATE TABLE IF NOT EXISTS fruit (
+            fruit_id INTEGER,
+            name VARCHAR NOT NULL,
+            color VARCHAR NOT NULL
+            );
+        """,
     )
 
     rd
