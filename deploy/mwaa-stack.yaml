@@ -44,11 +44,20 @@ Parameters:
     Type: String
     Default: 10.193.22.0/24
 
+  PublicSubnet1CIDR:
+    Description: Please enter the IP range (CIDR notation) for the public subnet in the second Availability Zone
+    Type: String
+    Default: 10.193.31.0/24
+
+
+  PublicSubnet2CIDR:
+    Description: Please enter the IP range (CIDR notation) for the public subnet in the second Availability Zone
+    Type: String
+    Default: 10.193.32.0/24
+
   AirflowVersion:
     Description: Airflow Version
     Type: String
-    Default: 2.5.1
-
 
 Resources:
   #####################################################################################################################
