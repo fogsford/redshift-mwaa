@@ -18,18 +18,24 @@ dag = DAG(
     catchup=False
 )
 
-# Task 1 using SQLExecuteQueryOperator
-task1_sql_exec_query = SQLExecuteQueryOperator(
-    task_id='execute_query_using_sql_operator',
-    sql="SELECT usename, usesysid, usesuper FROM pg_user WHERE usename=current_user;",
-    conn_id="redshift_default",  # Make sure to configure this connection in Airflow
-    dag=dag
-)
+# # Task 1 using SQLExecuteQueryOperator
+# task1_sql_exec_query = SQLExecuteQueryOperator(
+#     task_id='execute_query_using_sql_operator',
+#     sql="SELECT usename, usesysid, usesuper FROM pg_user WHERE usename=current_user;",
+#     conn_id="redshift_default",  # Make sure to configure this connection in Airflow
+#     dag=dag
+# )
 
 # Task 2 using RedshiftDataOperator
 task2_redshift_data = RedshiftDataOperator(
     task_id='execute_query_using_redshift_operator',
-    sql="SELECT usename, usesysid, usesuper FROM pg_user WHERE usename=current_user;",
+    sql="""
+    CREATE SCHEMA IF NOT EXISTS mwaa;
+    CREATE TABLE IF NOT EXISTS mwaa.users (
+        user_id INT,
+        user_name VARCHAR(100)
+    );
+    """,
     database="dev",
     workgroup_name = "mwaa",
     dag=dag
