@@ -254,7 +254,7 @@ Resources:
       ServiceName: !Sub "com.amazonaws.${AWS::Region}.redshift-data"
       VpcEndpointType: Interface
       VpcId: !Ref VPC
-      PrivateDnsEnabled: false
+      PrivateDnsEnabled: true
       SubnetIds:
       - !Ref PrivateSubnet1
       - !Ref PrivateSubnet2
@@ -268,7 +268,7 @@ Resources:
       ServiceName: !Sub "com.amazonaws.${AWS::Region}.redshift-fips"  
       VpcEndpointType: Interface
       VpcId: !Ref VPC
-      PrivateDnsEnabled: false
+      PrivateDnsEnabled: true
       SubnetIds:
       - !Ref PrivateSubnet1
       - !Ref PrivateSubnet2
@@ -276,12 +276,6 @@ Resources:
       SecurityGroupIds:
       - !Ref SecurityGroup
 
-  NoIngressSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupName: "no-ingress-sg"
-      GroupDescription: "Security group with no ingress rule"
-      VpcId: !Ref VPC
 
 
   #####################################################################################################################
@@ -423,7 +417,7 @@ Resources:
 
           - Effect: Allow
             Action:
-              - redshift-data:*''
+              - redshift-data:*
             Resource: '*'
 #
 
@@ -520,4 +514,3 @@ Outputs:
   MwaaApacheAirflowUI:
     Description: MWAA Environment
     Value: !Sub  "https://${MwaaEnvironment.WebserverUrl}"
-
