@@ -38,7 +38,12 @@ Parameters:
     Description: Please enter the IP range (CIDR notation) for the private subnet in the second Availability Zone
     Type: String
     Default: 10.193.21.0/24
-    
+
+  PrivateSubnet3CIDR:
+    Description: Please enter the IP range (CIDR notation) for the private subnet in the third Availability Zone
+    Type: String
+    Default: 10.193.22.0/24
+
   AirflowVersion:
     Description: Airflow Version
     Type: String
@@ -93,6 +98,18 @@ Resources:
         - Key: Name
           Value: !Sub ${EnvironmentName} Private Subnet (AZ2)
 
+  PrivateSubnet3:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 2, !GetAZs  '' ]
+      CidrBlock: !Ref PrivateSubnet3CIDR
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName} Private Subnet (AZ3)
+
+
   PrivateRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
@@ -112,6 +129,12 @@ Resources:
     Properties:
       RouteTableId: !Ref PrivateRouteTable
       SubnetId: !Ref PrivateSubnet2
+
+  PrivateSubnet3RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable
+      SubnetId: !Ref PrivateSubnet3
 
   SecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -185,6 +208,7 @@ Resources:
       SubnetIds:
       - !Ref PrivateSubnet1
       - !Ref PrivateSubnet2
+      - !Ref PrivateSubnet3
       SecurityGroupIds:
       - !Ref SecurityGroup
   EcrDkrVpcEndoint:
@@ -197,6 +221,7 @@ Resources:
       SubnetIds:
       - !Ref PrivateSubnet1
       - !Ref PrivateSubnet2
+      - !Ref PrivateSubnet3
       SecurityGroupIds:
       - !Ref SecurityGroup
 
@@ -219,6 +244,7 @@ Resources:
       SubnetIds:
       - !Ref PrivateSubnet1
       - !Ref PrivateSubnet2
+      - !Ref PrivateSubnet3
       SecurityGroupIds:
       - !Ref SecurityGroup
 
@@ -232,6 +258,7 @@ Resources:
       SubnetIds:
       - !Ref PrivateSubnet1
       - !Ref PrivateSubnet2
+      - !Ref PrivateSubnet3
       SecurityGroupIds:
       - !Ref SecurityGroup
 
@@ -245,6 +272,7 @@ Resources:
       SubnetIds:
       - !Ref PrivateSubnet1
       - !Ref PrivateSubnet2
+      - !Ref PrivateSubnet3
       SecurityGroupIds:
       - !Ref SecurityGroup
 
@@ -447,6 +475,7 @@ Resources:
       SubnetIds:
           - !Ref PrivateSubnet1
           - !Ref PrivateSubnet2
+          - !Ref PrivateSubnet3
       WorkgroupName: !Ref WorkgroupNameParameter
   RedshiftClusterNamespace:
     Type: AWS::RedshiftServerless::Namespace
@@ -472,7 +501,7 @@ Outputs:
 
   PrivateSubnets:
     Description: A list of the private subnets
-    Value: !Join [ ",", [ !Ref PrivateSubnet1, !Ref PrivateSubnet2 ]]
+    Value: !Join [ ",", [ !Ref PrivateSubnet1, !Ref PrivateSubnet2, !Ref PrivateSubnet3]]
 
 
   PrivateSubnet1:
@@ -482,6 +511,10 @@ Outputs:
   PrivateSubnet2:
     Description: A reference to the private subnet in the 2nd Availability Zone
     Value: !Ref PrivateSubnet2
+  
+  PrivateSubnet3:
+    Description: A reference to the private subnet in the 3rd Availability Zone
+    Value: !Ref PrivateSubnet3
 
   MwaaApacheAirflowUI:
     Description: MWAA Environment
