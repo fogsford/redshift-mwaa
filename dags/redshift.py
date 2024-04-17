@@ -31,6 +31,7 @@ task2_redshift_data = RedshiftDataOperator(
     task_id='execute_query_using_redshift_operator',
     sql="SELECT usename, usesysid, usesuper FROM pg_user WHERE usename=current_user;",
     database="dev",
+    workgroup_name = "mwaa",
     dag=dag
 )
 
