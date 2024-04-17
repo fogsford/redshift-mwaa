@@ -39,7 +39,7 @@ task2_redshift_data = RedshiftDataOperator(
     database="dev",
     workgroup_name = "mwaa",
     dag=dag,
-    return_sql_result = True
+    return_sql_result = False
 )
 
 # Define task order
