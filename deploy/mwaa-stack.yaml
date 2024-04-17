@@ -4,6 +4,9 @@ Parameters:
   S3Bucket:
     Type: String
     Description: S3Bucket Where the dags are stored
+  RequirementsS3ObjectVersion:
+    Type: String
+    Description: Requirements file S3 object version
 
   EnvironmentName:
     Description: An environment name that is prefixed to resource names
@@ -233,8 +236,8 @@ Resources:
       SourceBucketArn: !Sub "arn:aws:s3:::${S3Bucket}"
       ExecutionRoleArn: !GetAtt MwaaExecutionRole.Arn
       DagS3Path: dags
-      # RequirementsS3Path: requirements.txt
-      # RequirementsS3ObjectVersion: !Ref RequirementsFileVersion
+      RequirementsS3ObjectVersion:  !Ref RequirementsS3ObjectVersion
+      RequirementsS3Path: requirements.txt
       # PluginsS3Path: plugins/plugins.zip
       # PluginsS3ObjectVersion: !Ref PluginsVersion
       NetworkConfiguration: 

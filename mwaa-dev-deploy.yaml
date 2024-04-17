@@ -1,6 +1,0 @@
-template-file-path: deploy/mwaa-stack.yaml
-parameters:
-  S3Bucket: fogsforddags
-  EnvironmentName: dev
-  AirflowVersion: 2.7.2
-tags: {}
