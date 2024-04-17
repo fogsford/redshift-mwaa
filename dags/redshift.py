@@ -33,3 +33,6 @@ try:
     
 except Exception as msg:
     print(msg)
+    
+
+    #https://blog.beachgeek.co.uk/using-redshift-with-mwaa/

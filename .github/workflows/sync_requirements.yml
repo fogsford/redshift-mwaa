@@ -1,0 +1,39 @@
+---
+    name: "2. Sync requirements"
+    env:
+      AWS_S3_BUCKET: fogsford-dags-dev
+
+    
+    on:
+      push:
+        branches:
+          - master
+        paths:
+          - requirements/**
+      workflow_dispatch:
+    
+    permissions:
+        id-token: write
+        contents: write
+    
+    concurrency:
+        group: ${{ github.event_name }}-${{ github.workflow }}-${{ github.head_ref || github.ref }}
+        cancel-in-progress: true
+    
+    
+    jobs:
+      sync:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Git clone our repo
+            uses: actions/checkout@v4
+    
+          - name: Configure AWS Credentials
+            uses: aws-actions/configure-aws-credentials@v4
+            with:
+              role-to-assume: arn:aws:iam::248992976571:role/GithubActionsWeb
+              aws-region:  us-east-1
+    
+          - name: sync s3
+            run: |
+              aws s3 cp requirements/requirements.txt s3://${{ env.AWS_S3_BUCKET }}/requirements.txt
