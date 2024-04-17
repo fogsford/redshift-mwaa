@@ -213,39 +213,40 @@ Resources:
     Type: AWS::EC2::VPCEndpoint
     Properties: 
       ServiceName: !Sub 'com.amazonaws.${AWS::Region}.redshift'
-      SecurityGroupIds:
-        - !GetAtt RedshiftClusterSecurityGroup.GroupId
-      SubnetIds:
-          - !Ref PrivateSubnet1
-          - !Ref PrivateSubnet2
       VpcEndpointType: Interface
       VpcId: !Ref VPC
+      PrivateDnsEnabled: true
+      SubnetIds:
+      - !Ref PrivateSubnet1
+      - !Ref PrivateSubnet2
+      SecurityGroupIds:
+      - !Ref SecurityGroup
 
   RedshiftDataEndoint:
     Type: AWS::EC2::VPCEndpoint
     Properties: 
       ServiceName: !Sub "com.amazonaws.${AWS::Region}.redshift-data"
-      PrivateDnsEnabled: true
-      SecurityGroupIds:
-        - !GetAtt RedshiftClusterSecurityGroup.GroupId
-      SubnetIds:
-          - !Ref PrivateSubnet1
-          - !Ref PrivateSubnet2
       VpcEndpointType: Interface
       VpcId: !Ref VPC
+      PrivateDnsEnabled: false
+      SubnetIds:
+      - !Ref PrivateSubnet1
+      - !Ref PrivateSubnet2
+      SecurityGroupIds:
+      - !Ref SecurityGroup
 
   RedshiftFipsEndoint:
     Type: AWS::EC2::VPCEndpoint
     Properties: 
       ServiceName: !Sub "com.amazonaws.${AWS::Region}.redshift-fips"  
-      PrivateDnsEnabled: true
-      SecurityGroupIds:
-        - !GetAtt RedshiftClusterSecurityGroup.GroupId
-      SubnetIds:
-          - !Ref PrivateSubnet1
-          - !Ref PrivateSubnet2
       VpcEndpointType: Interface
       VpcId: !Ref VPC
+      PrivateDnsEnabled: false
+      SubnetIds:
+      - !Ref PrivateSubnet1
+      - !Ref PrivateSubnet2
+      SecurityGroupIds:
+      - !Ref SecurityGroup
 
   NoIngressSecurityGroup:
     Type: AWS::EC2::SecurityGroup
