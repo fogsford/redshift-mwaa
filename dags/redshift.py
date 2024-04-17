@@ -19,9 +19,9 @@ dag = DAG(
 try:
     # rd = 
     
-    rd = RedshiftSQLOperator(
+    rd = SQLExecuteQueryOperator(
         task_id='setup__create_table',
-        redshift_conn_id="redshift_default",
+        conn_id="redshift_default",
         sql="""
             CREATE TABLE IF NOT EXISTS fruit (
             fruit_id INTEGER,
