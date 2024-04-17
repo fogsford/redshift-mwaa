@@ -159,13 +159,15 @@ Resources:
       VpcId: !Ref VPC
       GroupDescription: Security Group for Amazon MWAA Environments to access VPC endpoints
       GroupName: !Sub "${AWS::StackName}-mwaa-vpc-endpoints"
+
    
   SecurityGroupIngress:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
       GroupId: !Ref SecurityGroup
       IpProtocol: "-1"
-      SourceSecurityGroupId: !Ref SecurityGroup
+      CidrIp: 0.0.0.0/0
+
   SqsVpcEndoint:
     Type: AWS::EC2::VPCEndpoint
     Properties:
