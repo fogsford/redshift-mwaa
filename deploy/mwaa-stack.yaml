@@ -284,6 +284,8 @@ Resources:
       SecurityGroupIds:
       - !Ref SecurityGroup
 
+
+  # Not a
   # RedshiftServerlessEndoint:
   #   Type: AWS::EC2::VPCEndpoint
   #   Properties: 
