@@ -494,7 +494,7 @@ Resources:
       ConfigParameters:
         - ParameterKey: require_ssl
           ParameterValue: 'true'
-      EnhancedVpcRouting: true
+      EnhancedVpcRouting: false
       NamespaceName: !Ref RedshiftClusterNamespace
       Port: 5439
       PubliclyAccessible: false
