@@ -6,9 +6,9 @@ env:
 
 on:
     push:
-    branches:
+      branches:
         - main
-    paths:
+      paths:
         - requirements/**
     workflow_dispatch:
 
