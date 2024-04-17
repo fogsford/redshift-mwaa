@@ -276,6 +276,19 @@ Resources:
       SecurityGroupIds:
       - !Ref SecurityGroup
 
+  RedshiftServerlessEndoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties: 
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.redshift-serverless"  
+      VpcEndpointType: Interface
+      VpcId: !Ref VPC
+      PrivateDnsEnabled: true
+      SubnetIds:
+      - !Ref PrivateSubnet1
+      - !Ref PrivateSubnet2
+      - !Ref PrivateSubnet3
+      SecurityGroupIds:
+      - !Ref SecurityGroup
 
 
   #####################################################################################################################
