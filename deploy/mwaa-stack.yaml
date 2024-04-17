@@ -466,10 +466,10 @@ Resources:
       ConfigParameters:
         - ParameterKey: require_ssl
           ParameterValue: 'true'
-      EnhancedVpcRouting: false
+      EnhancedVpcRouting: true
       NamespaceName: !Ref RedshiftClusterNamespace
       Port: 5439
-      PubliclyAccessible: true
+      PubliclyAccessible: false
       SecurityGroupIds:
         - !GetAtt RedshiftClusterSecurityGroup.GroupId
       SubnetIds:
