@@ -455,7 +455,7 @@ Resources:
       DbName: lab
       IamRoles:
         - !GetAtt RedshiftClusterRole.Arn
-      NamespaceName: adhoc-cluster
+      NamespaceName: !Ref WorkgroupNameParameter
       LogExports:
         - userlog
         - connectionlog
