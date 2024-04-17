@@ -519,3 +519,4 @@ Outputs:
   MwaaApacheAirflowUI:
     Description: MWAA Environment
     Value: !Sub  "https://${MwaaEnvironment.WebserverUrl}"
+
