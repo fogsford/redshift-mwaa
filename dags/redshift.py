@@ -1,7 +1,6 @@
 import os
 from airflow import DAG
 from airflow.providers.amazon.aws.operators.redshift_data import RedshiftDataOperator
-from airflow.providers.amazon.aws.operators.redshift_sql import RedshiftSQLOperator
 from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 default_args = {
     "start_date": "2023-03-01",
