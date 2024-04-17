@@ -249,7 +249,8 @@ Resources:
       VpcEndpointType: Gateway
       VpcId: !Ref VPC
       RouteTableIds:
-      - !Ref PrivateRouteTable
+      - !Ref PrivateRouteTable1
+      - !Ref PrivateRouteTable2
 
   RedshiftVPCEndpoint:
     Type: AWS::EC2::VPCEndpoint
