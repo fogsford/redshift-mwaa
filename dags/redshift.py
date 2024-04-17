@@ -35,4 +35,4 @@ task2_redshift_data = RedshiftDataOperator(
 )
 
 # Define task order
-task1_sql_exec_query >> task2_redshift_data
+## task1_sql_exec_query >> task2_redshift_data
