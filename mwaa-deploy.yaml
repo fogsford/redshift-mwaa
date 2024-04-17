@@ -4,4 +4,5 @@ parameters:
   EnvironmentName: dev
   AirflowVersion: 2.7.2
   RequirementsS3ObjectVersion: LP01XRquMHQfY7zw1vVsi9MYLo4Fc0q_
+  WorkgroupNameParameter: mwaa
 tags: {}

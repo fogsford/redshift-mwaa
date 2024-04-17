@@ -13,6 +13,9 @@ Parameters:
     Type: String
     Default: MWAAEnvironment
 
+  WorkgroupNameParameter:
+    Type: String
+
   # RequirementsFileVersion:
   #   Description: Requirements file S3 object version
   #   Type: String
@@ -206,6 +209,31 @@ Resources:
       RouteTableIds:
       - !Ref PrivateRouteTable
 
+  RedshiftVpcEndoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.redshift"  
+      VpcEndpointType: Gateway
+      VpcId: !Ref VPC
+      RouteTableIds:
+      - !Ref PrivateRouteTable
+
+  RedshiftDataEndoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.redshift-data"   
+      VpcEndpointType: Gateway
+      VpcId: !Ref VPC
+      RouteTableIds:
+      - !Ref PrivateRouteTable
+  RedshiftFipsEndoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.redshift-fips"   
+      VpcEndpointType: Gateway
+      VpcId: !Ref VPC
+      RouteTableIds:
+      - !Ref PrivateRouteTable
 
   NoIngressSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -356,6 +384,70 @@ Resources:
               - redshift-data:*''
             Resource: '*'
 #
+
+
+### Redshift
+  RedshiftClusterRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              Service: redshift.amazonaws.com
+      RoleName: !Sub "${WorkgroupNameParameter}-redshift-s3"
+  RedshiftClusterSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for the redshift adhoc cluster
+      GroupName: !Sub "${WorkgroupNameParameter}-redshift"
+      VpcId: !Ref VPC
+      SecurityGroupEgress:
+        - CidrIp: 0.0.0.0/0
+          Description: Allow all outbound traffic by default
+          IpProtocol: '-1'
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          Description: CIDR range of the default VPC
+          FromPort: 5439
+          IpProtocol: tcp
+          ToPort: 5439
+      Tags:
+        - Key: Name
+          Value: mwaa
+  RedshiftClusterWorkgroup:
+    Type: AWS::RedshiftServerless::Workgroup
+    DependsOn: RedshiftClusterNamespace
+    Properties:
+      BaseCapacity: 8
+      ConfigParameters:
+        - ParameterKey: require_ssl
+          ParameterValue: 'true'
+      EnhancedVpcRouting: false
+      NamespaceName: !Ref RedshiftClusterNamespace
+      Port: 5439
+      PubliclyAccessible: true
+      SecurityGroupIds:
+        - !GetAtt RedshiftClusterSecurityGroup.GroupId
+      SubnetIds:
+          - !Ref PrivateSubnet1
+          - !Ref PrivateSubnet2
+      WorkgroupName: !Ref WorkgroupNameParameter
+  RedshiftClusterNamespace:
+    Type: AWS::RedshiftServerless::Namespace
+    DependsOn: RedshiftClusterRole
+    Properties:
+      ManageAdminPassword: true
+      DbName: lab
+      IamRoles:
+        - !GetAtt RedshiftClusterRole.Arn
+      NamespaceName: adhoc-cluster
+      LogExports:
+        - userlog
+        - connectionlog
+        - useractivitylog
 
 
 
